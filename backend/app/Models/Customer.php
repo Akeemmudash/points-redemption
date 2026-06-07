@@ -13,6 +13,10 @@ class Customer extends Model
     use HasFactory;
     protected $fillable = ['name', 'email', 'phone', 'points_balance', 'status'];
 
+    protected $attributes = [
+        'status' => 'active',
+    ];
+
     protected function casts(): array
     {
         return [
