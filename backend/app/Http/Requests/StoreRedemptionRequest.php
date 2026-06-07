@@ -29,6 +29,7 @@ class StoreRedemptionRequest extends FormRequest
             'points'       => ['required', 'integer', 'min:1'],
             'amount'       => ['required', 'integer', 'min:1'],
             'service_type' => ['required', Rule::enum(ServiceType::class)],
+            'idempotency_key' => ['required', 'string', 'max:255']
         ];
     }
 }

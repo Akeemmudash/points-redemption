@@ -23,6 +23,7 @@ class RedemptionController extends Controller
             $data['points'],
             $data['amount'],
             ServiceType::from($data['service_type']),
+            $data['idempotency_key'],
         );
 
         return RedemptionResource::make($redemption)
