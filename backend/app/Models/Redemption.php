@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use App\Enums\Enums\ServiceType;
+use App\Enums\ServiceType;
 use App\Enums\RedemptionStatus;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;

@@ -2,7 +2,7 @@
 
 namespace Database\Factories;
 
-use App\Enums\Enums\ServiceType;
+use App\Enums\ServiceType;
 use App\Enums\RedemptionStatus;
 use App\Models\Customer;
 use App\Models\Redemption;
