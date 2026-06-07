@@ -1,0 +1,84 @@
+services:
+  backend:
+    build: ./backend
+    container_name: prs-backend
+    working_dir: /var/www/html
+    volumes:
+      - ./backend:/var/www/html
+    depends_on:
+      db:
+        condition: service_healthy
+    networks: [prs]
+
+  nginx:
+    image: nginx:alpine
+    container_name: prs-nginx
+    ports:
+      - "8000:80"
+    volumes:
+      - ./backend:/var/www/html
+      - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - backend
+    networks: [prs]
+
+  db:
+    image: postgres:16
+    container_name: prs-db
+    environment:
+      POSTGRES_DB: points_redemption
+      POSTGRES_USER: prs
+      POSTGRES_PASSWORD: secret
+    ports:
+      - "5432:5432"
+    volumes:
+      - prs-db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U prs -d points_redemption"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks: [prs]
+
+  queue:
+    build: ./backend
+    container_name: prs-queue
+    working_dir: /var/www/html
+    command: php artisan queue:work --tries=3
+    volumes:
+      - ./backend:/var/www/html
+    depends_on:
+      - backend
+      - db
+    networks: [prs]
+
+  scheduler:
+    build: ./backend
+    container_name: prs-scheduler
+    working_dir: /var/www/html
+    command: php artisan schedule:work
+    volumes:
+      - ./backend:/var/www/html
+    depends_on:
+      - backend
+      - db
+    networks: [prs]
+
+  frontend:
+    build: ./frontend
+    container_name: prs-frontend
+    working_dir: /app
+    command: pnpm run dev
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    ports:
+      - "5173:5173"
+    networks: [prs]
+
+volumes:
+  prs-db-data:
+
+networks:
+  prs:
+    driver: bridge
