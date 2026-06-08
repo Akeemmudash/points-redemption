@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Enums\CustomerStatus;
 use App\Enums\RedemptionStatus;
 use App\Enums\ServiceType;
 use App\Models\Customer;
@@ -83,6 +84,7 @@ class RedemptionService
             $redemption =  DB::transaction(function () use ($customer, $idempotencyKey, $points, $amount, $serviceType) {
                 $locked = Customer::whereKey($customer->getKey())->lockForUpdate()->first();
 
+                abort_if($locked->status !== CustomerStatus::Active, 422, 'Customer account is inactive.');
                 abort_if($locked->points_balance < $points, 422, 'Insufficient points');
                 $locked->decrement('points_balance', $points);
 

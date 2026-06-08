@@ -180,6 +180,27 @@ class RedemptionTest extends TestCase
         Redemption::factory()->for($customer)->create(['idempotency_key' => 'same']);
     }
 
+    public function test_rejects_redemption_for_inactive_customer(): void
+    {
+        $this->actingAsAdmin();
+        $customer = Customer::factory()->create([
+            'points_balance' => 1000,
+            'status'         => \App\Enums\CustomerStatus::Inactive,
+        ]);
+
+        $this->postJson('/api/redemptions', [
+            'customer_id'     => $customer->id,
+            'points'          => 300,
+            'amount'          => 30000,
+            'service_type'    => 'airtime',
+            'idempotency_key' => 'k-inactive',
+        ])->assertStatus(422)
+          ->assertJsonFragment(['message' => 'Customer account is inactive.']);
+
+        $this->assertEquals(1000, $customer->fresh()->points_balance);
+        $this->assertDatabaseCount('redemptions', 0);
+    }
+
     public function test_rejects_an_unauthenticated_redemption_request(): void
     {
         $customer = Customer::factory()->create();
