@@ -15,8 +15,7 @@ class EnsureUserHasRole
      */
     public function handle(Request $request, Closure $next, string $role): Response
     {
-
-        if (!$request->user() || $request->user()->role->value !== $role) {
+        if (!$request->user() || !$request->user()->role || $request->user()->role->value !== $role) {
             abort(403, 'This action is unauthorized');
         }
 
