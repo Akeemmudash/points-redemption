@@ -1,5 +1,7 @@
 # Points Redemption & Transaction Reconciliation System
 
+> **Repository:** https://github.com/Akeemmudash/points-redemption
+
 A full-stack loyalty-points redemption system: a **Laravel** REST API and a **React** (Vite) frontend, orchestrated with **Docker Compose** — Laravel (php-fpm), nginx, PostgreSQL, a queue worker, a scheduler, and the React dev server.
 
 ## Prerequisites
@@ -75,6 +77,18 @@ docker compose logs <service>      # view a service's logs (e.g. nginx, backend)
 docker compose down                # stop all services
 docker compose down -v             # stop and wipe the database volume
 ```
+
+## Documentation
+
+| Document | Location |
+|---|---|
+| API reference (OpenAPI / Swagger) | [`docs/openapi.json`](docs/openapi.json) — import into Postman or open with [Swagger Editor](https://editor.swagger.io) |
+| System design | [`docs/SYSTEM_DESIGN.md`](docs/SYSTEM_DESIGN.md) |
+| Frontend build plan | [`PRS-Frontend-Build-Plan (2).md`](PRS-Frontend-Build-Plan%20(2).md) |
+
+## Screenshots
+
+See [`docs/screenshots/`](docs/screenshots/) for a visual walkthrough of all pages.
 
 ## Troubleshooting
 
