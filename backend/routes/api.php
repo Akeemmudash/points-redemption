@@ -4,19 +4,20 @@ use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\CustomerController;
 use App\Http\Controllers\Api\ReconciliationController;
 use App\Http\Controllers\Api\RedemptionController;
+use App\Http\Controllers\Api\ReportController;
 use App\Models\Redemption;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 
 // Public
-Route::get('/health', fn () => response()->json([
+Route::get('/health', fn() => response()->json([
     'status' => 'ok',
     'service' => 'points-redemption-api'
 ]));
 
 
-Route::post('/login', [AuthController::class, 'login']);
+Route::post('/login', [AuthController::class, 'login'])->middleware('throttle:login');
 
 
 
@@ -29,14 +30,17 @@ Route::middleware('auth:sanctum')->group(function () {
     //IsAdmin
     Route::middleware('role:admin')->group(
         function () {
-            Route::get('/admin/ping', fn () => response()->json(['message' => 'hello, admin']));
+            Route::get('/admin/ping', fn() => response()->json(['message' => 'hello, admin']));
 
             Route::apiResource('customers', CustomerController::class)->except(['destroy']);
 
             Route::patch('/customers/{customer}/deactivate', [CustomerController::class, 'deactivate'])->name('customers.deactivate');
 
-            Route::post('/redemptions', [RedemptionController::class, 'store']);
+            Route::post('/redemptions', [RedemptionController::class, 'store'])->middleware('throttle:redemptions');
             Route::post('/reconciliation/run', [ReconciliationController::class, 'run']);
+
+            Route::get('/reports/summary', [ReportController::class, 'summary']);
+            Route::get('/reports/export',  [ReportController::class, 'export']);
         }
     );
 });
