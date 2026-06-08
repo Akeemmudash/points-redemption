@@ -1,0 +1,30 @@
+<?php
+
+namespace App\Console\Commands;
+
+use Illuminate\Console\Attributes\Description;
+use Illuminate\Console\Attributes\Signature;
+use Illuminate\Console\Command;
+
+#[Signature('app:reconcile-redemptions')]
+#[Description('Command description')]
+class ReconcileRedemptions extends Command
+{
+
+    protected $signature = 'redemptions:reconcile';
+    protected $description = 'Queue pending redemptions for reconciliation.';
+    
+    /**
+     * Execute the console command.
+     */
+
+
+    public function handle(ReconciliationService
+     $reconciliation): int
+    {
+        $count = $reconciliation->queuePending();
+        $this->info("Queued {$count} pending redemption(s).");
+
+        return self::SUCCESS;
+    }
+}
