@@ -46,6 +46,6 @@ class Redemption extends Model
 
     public function logs(): HasMany
     {
-        return $this->hasMany(TransactionLog::class);
+        return $this->hasMany(TransactionLog::class)->oldest();
     }
 }

@@ -36,6 +36,8 @@ Route::middleware('auth:sanctum')->group(function () {
 
             Route::patch('/customers/{customer}/deactivate', [CustomerController::class, 'deactivate'])->name('customers.deactivate');
 
+            Route::get('/redemptions', [RedemptionController::class, 'index']);
+            Route::get('/redemptions/{redemption}', [RedemptionController::class, 'show']);
             Route::post('/redemptions', [RedemptionController::class, 'store'])->middleware('throttle:redemptions');
             Route::post('/reconciliation/run', [ReconciliationController::class, 'run']);
 
